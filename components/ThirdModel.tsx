@@ -30,7 +30,6 @@ const ThirdModel = ({ shirtType }: { shirtType: ShirtType }) => {
 
   const envMap = useShirtEnvCube(shirtType);
   const video = useShirtVideoTexture(shirtType);
-  console.log(envMap);
   useGSAP(() => {
     if (!groupRef.current || !maskRef.current) return;
     gsap

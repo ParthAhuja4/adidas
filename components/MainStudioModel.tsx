@@ -22,7 +22,7 @@ export function MainStudioModel({
   scale: number;
 }) {
   const { nodes } = useGLTF(
-    "/models/main/MainStudio.glb"
+    "/models/main/MainStudio.glb",
   ) as unknown as GLTFResult;
 
   const textures = useMainStudioTextures();
@@ -58,10 +58,10 @@ export function MainStudioModel({
         slug: "gray",
       },
     ],
-    [nodes, mats]
+    [nodes, mats],
   );
   const [envMaterial, setEnvMaterial] = useState<THREE.MeshBasicMaterial>(
-    mats.defaultStudio
+    mats.defaultStudio,
   );
   const groupRef = useRef<THREE.Group>(null);
   const meshRefs = useRef<(THREE.Mesh | null)[]>([]);
@@ -85,7 +85,7 @@ export function MainStudioModel({
         sessionStorage.setItem("mainStudioAnimationRan", "true");
       },
     });
-    meshRefs.current.forEach((shirt, i) => {
+    meshRefs.current.forEach((shirt) => {
       if (!shirt) return;
       gsap.from(shirt.position, {
         x: shirt.position.x * 2,
@@ -118,7 +118,7 @@ export function MainStudioModel({
             duration: 1,
             ease: "power1.inOut",
           },
-          "<"
+          "<",
         );
     });
   });
@@ -129,7 +129,7 @@ export function MainStudioModel({
       if (!mesh) return;
       switch (currentIndex) {
         case 0:
-          gsap.to(mesh.position, { x: mesh.position.x - 0.65 });
+          gsap.to(mesh.position, { x: mesh.position.x + 0.65 });
           gsap.to(mesh.rotation, { y: 0 });
           gsap.to(meshRefs.current[0]!.position, { z: 0 });
           gsap.to(meshRefs.current[1]!.position, { z: -0.45 });
@@ -143,7 +143,7 @@ export function MainStudioModel({
           setEnvMaterial(mats.redStudio);
           break;
         case 2:
-          gsap.to(mesh.position, { x: mesh.position.x + 0.65 });
+          gsap.to(mesh.position, { x: mesh.position.x - 0.65 });
           gsap.to(mesh.rotation, { y: 0 });
           gsap.to(meshRefs.current[2]!.position, { z: 0 });
           gsap.to(meshRefs.current[1]!.position, { z: -0.45 });
@@ -152,19 +152,6 @@ export function MainStudioModel({
       }
     }
   }, [currentIndex]);
-  function enterHandler(index: number, material: THREE.MeshBasicMaterial) {
-    document.body.style.cursor = "pointer";
-    setEnvMaterial(material);
-    tlRefs.current[index].play();
-  }
-  function leaveHandler(index: number) {
-    document.body.style.cursor = "auto";
-    tlRefs.current[index].reverse();
-  }
-  function handleClick(slug: string) {
-    router.push(`/shirts/${slug}`);
-    document.body.style.cursor = "auto";
-  }
   return (
     <group ref={groupRef} dispose={null} scale={scale}>
       <mesh
@@ -184,9 +171,19 @@ export function MainStudioModel({
           material={shirt.material}
           position={shirt.position}
           rotation={shirt.rotation}
-          onPointerEnter={() => enterHandler(i, shirt.hoverdMat)}
-          onPointerLeave={() => leaveHandler(i)}
-          onClick={() => handleClick(shirt.slug)}
+          onPointerEnter={() => {
+            document.body.style.cursor = "pointer";
+            setEnvMaterial(shirt.hoverdMat);
+            tlRefs.current[i].play();
+          }}
+          onPointerLeave={() => {
+            document.body.style.cursor = "auto";
+            tlRefs.current[i].reverse();
+          }}
+          onClick={() => {
+            router.push(`/shirts/${shirt.slug}`);
+            document.body.style.cursor = "auto";
+          }}
         />
       ))}
       <mesh
