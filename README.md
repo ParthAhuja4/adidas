@@ -45,7 +45,7 @@ The project is organized into the following main directories:
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/adidas.git
+    git clone https://github.com/ParthAhuja4/adidas.git
     cd adidas
     ```
 
